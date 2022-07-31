@@ -1,0 +1,18 @@
+Assignment:
+
+Create a program that can calculate bridge scores . . . 
+
+A bridge hand contains thirteen cards. 
+
+Ace = 4 points ea, 
+King = 3 points ea, 
+queen = 2 points ea,
+Jack = 1 point ea,
+
+*all other cards have no point value 
+
+"distribution" points:
+
+Two cards of a particular suit = 1 extra point.
+"Singleton," (only one card of a particular suit) = 2 extra points. 
+A "void,'' (no cards in a particular suit) = 3 extra points.
