@@ -1,0 +1,8 @@
+#lang simply-scheme
+(define (card-val card)
+  (cond ((equal? (first card) 'a) 4)
+        ((equal? (first card) 'k) 3)
+        ((equal? (first card) 'q) 2)
+        ((equal? (first card) 'j) 1)
+        (else 0)))
+ 
