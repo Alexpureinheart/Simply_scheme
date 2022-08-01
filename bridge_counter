@@ -1,8 +1,12 @@
 #lang simply-scheme
 (define (card-val card)
-  (cond ((equal? (first card) 'a) 4)
-        ((equal? (first card) 'k) 3)
-        ((equal? (first card) 'q) 2)
-        ((equal? (first card) 'j) 1)
+  (cond ((equal? (last card) 'a) 4)
+        ((equal? (last card) 'k) 3)
+        ((equal? (last card) 'q) 2)
+        ((equal? (last card) 'j) 1)
         (else 0)))
+
+(define (high-card-points hand)
+  (accumulate + (every card-val hand)))
+
  
