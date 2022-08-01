@@ -9,4 +9,10 @@
 (define (high-card-points hand)
   (accumulate + (every card-val hand)))
 
+(define (count-suit suit hand)
+  (accumulate + (every (lambda (sl) (if (equal? suit (first sl))
+                           1
+                       0)) hand)))
+
+
  
