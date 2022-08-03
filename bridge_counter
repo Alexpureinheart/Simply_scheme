@@ -14,5 +14,10 @@
                            1
                        0)) hand)))
 
+(define (suit-counts hand)
+  (sentence (count-suit 's hand)
+            (count-suit 'h hand)
+            (count-suit 'c hand)
+            (count-suit 'd hand)))
 
  
