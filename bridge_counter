@@ -29,3 +29,5 @@
 (define (hand-dist-points hand)
   (accumulate + (every suit-dist-points (suit-counts hand)))) 
   
+(define (bridge-val hand)
+  (+ (high-card-points hand) (hand-dist-points hand)))
