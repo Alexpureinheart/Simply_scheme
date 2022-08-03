@@ -25,3 +25,7 @@
         ((equal? cis 1) 2)
         ((equal? cis 0) 3)
         (else 0)))
+
+(define (hand-dist-points hand)
+  (accumulate + (every suit-dist-points (suit-counts hand)))) 
+  
