@@ -1,0 +1,132 @@
+#lang simply-scheme
+
+;=====================================making triplets and inserting decimals=============================
+
+(define decimal-places '(thousand million billion trillion quadrillion quintillion sectillion septillion
+                                  octillion nonillion decillion))
+
+(define (make-triplets n)
+  (cond ((= (count n) 0) '())
+        ((>= (count n) 3) (se (word (last n) (last (bl n)) (last (bl (bl n)))) (make-triplets (bl (bl (bl n))))))
+        ((= (count n) 2) (se (word (last n) (last (bl n))) (make-triplets (bl (bl n)))))
+        (else (se n (make-triplets (bl n))))))
+
+(define (count-triplets sent)
+      (cond ((empty? sent) 0)
+            ((= (count sent) 1) 0)
+            ((< (count(first sent)) 3) 0)
+            (else (+ 1 (count-triplets (bf sent))))))
+
+(define (generate-decimal-places n)
+  (if (= n 0) '()
+  (se (item n decimal-places) (generate-decimal-places (- n 1)))))
+
+(define (reverse-word wd)
+  (if (= (count wd) 0) ""
+      (word (last wd) (reverse-word (bl wd)))))
+
+(define (reverse-sentence sent)
+  (cond ((empty? sent)'())
+        ;((= (count sent)1) (se (reverse-word sent) (reverse-sentence2 (bl sent))))
+        (else (se (reverse-word (last sent))(reverse-sentence (bl sent))))))
+
+;Make a procedure that inserts decimal places based on item position . . .
+
+(define (insert-large-decimals sent1 sent2)
+  (cond ((empty? sent1)'())
+        ;((equal? (last sent1) "000")(se '() (insert-large-decimals (bl sent1)(bl sent2))))
+        ((empty? sent2) (se sent1 (insert-large-decimals (bl sent1) sent2)))
+        (else (se (last sent1) (last sent2) (insert-large-decimals (bl sent1) (bl sent2))))))
+
+
+;=================================parcing individual triplets====================================
+
+
+(define (parse-single-digit n) ;converts a single integer to a string 
+  (cond ((= n 1)'one)
+        ((= n 2)'two)
+        ((= n 3)'three)
+        ((= n 4)'four)
+        ((= n 5)'five)
+        ((= n 6)'six)
+        ((= n 7)'seven)
+        ((= n 8)'eight)
+        ((= n 9)'nine)
+        (else '())))
+
+(define (parse-tens n)
+  (cond ((= n 2)'twenty)
+        ((= n 3)'thirty)
+        ((= n 4)'forty)
+        ((= n 5)'fifty)
+        ((= n 6)'sixty)
+        ((= n 7)'seventy)
+        ((= n 8)'eighty)
+        ((= n 9)'ninety)
+        (else '())))
+
+(define (parse-teens n)
+  (cond ((= n 10)'ten)
+        ((= n 11) 'eleven)
+        ((= n 12) 'twelve)
+        ((= n 13) 'thirteen)
+        ((= n 14) 'fourteen)
+        ((= n 15) 'fifteen)
+        ((= n 16) 'sixteen)
+        ((= n 17) 'seventeen)
+        ((= n 18) 'eighteen)
+        ((= n 19) 'nineteen)))
+
+(define (parse-number n) ;uses 'parse-single-digit' to convert a series of numbers to a sentence of strings
+  (if (empty? n)'()
+      (se (parse-single-digit(last n))(parse-number (bl n)))))
+
+(define (determine-triplets wd)  
+  (cond ((empty? wd) '())
+        ((equal? (first wd) 0)(se '() (determine-triplets (bf wd))))
+        ((= (count wd) 3) (se (parse-single-digit (first wd)) 'hundred (determine-triplets (bf wd))))
+        ((= (count wd) 2) (if (equal? (first wd) 1)(se (parse-teens wd) (determine-triplets (bf (bf wd))))
+                              (se (parse-tens (first wd))(parse-single-digit (last wd)))))
+        (else (se (parse-single-digit wd) (determine-triplets (bf wd))))))
+
+
+(define (parse-sentence sent)
+  (cond ((empty? sent)'())
+        ((number? (first (first sent))) (se (determine-triplets (first sent))(parse-sentence (bf sent))))
+        (else (se (first sent) (parse-sentence (bf sent))))))
+
+(define (number-name-messy n)
+  (parse-sentence (reverse (insert-large-decimals (reverse-sentence (make-triplets n))
+                                                   (generate-decimal-places (count-triplets (make-triplets n)))))))
+
+(define (factorial n)
+  (if (= n 1)n
+  (* n (factorial (- n 1)))))
+
+(define (number-name-clean sent)
+  (cond ((empty? sent)'())
+        ((and (member? (last sent) decimal-places)(member? (last (bl sent)) decimal-places))
+         (number-name-clean (bl sent)))
+        (else (se (last sent) (number-name-clean (bl sent))))))
+
+
+(define (number-name n)
+  (reverse (number-name-clean (number-name-messy n))))
+
+;=========================== test =================================
+;(make-triplets 12345678)
+;(reverse-sentence (make-triplets 12345678))
+;(count-triplets (make-triplets 12345678))
+;(generate-decimal-places (count-triplets (make-triplets 12345678)))
+;(number-name-messy 2000000001)
+;(number-name-messy 2000000000)
+;(reverse (insert-large-decimals (reverse-sentence (make-triplets 12345678))
+;                                         (generate-decimal-places (count-triplets (make-triplets 12345678)))))
+
+;(reverse (number-name-clean (number-name-messy 2000000000)))
+;(reverse (number-name-clean (number-name-messy 2000000001)))
+
+;(number-name 200100100001)
+(number-name 5513345)
+(number-name (factorial 20))
+(number-name 1000529)
